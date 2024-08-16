@@ -61,3 +61,5 @@ I originally wanted to add the telemetry data to SQS so that we can automaticall
 I also wanted to add a cron job creator so that every 1 minute it runs and transmits to SQS, the http get request can be the healthcheck. This way we can test in prod and any time something is updated we can automatically detect weirdness if exists.
 
 I also wanted to add a compiler for specific OS/ARCH so that a user can set those via params or ENV vars and then build accordingly for that system. This way we can have branches that hold specific builds and all we have to do at that point is place the compiled app inside of that branch.
+
+Log TTL's after every say 7 days we can clean up the logs files.
