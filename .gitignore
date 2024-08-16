@@ -1,0 +1,4 @@
+# .gitignore
+state.json
+tememetry-test-framework
+tememetry-test-framework.exe

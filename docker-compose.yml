@@ -1,0 +1,86 @@
+services:
+  app:
+    build:
+      context: ./telemetry-app
+      dockerfile: Dockerfile
+    container_name: telemetry_test_framework
+    working_dir: /go/src/telemetry-test-framework
+    environment:
+      - GOOS=${GOOS:-linux}
+      - GOARCH=${GOARCH:-amd64}
+      - BUILD_LOC=${BUILD_LOC}
+      - GO_ENV=${GO_ENV:-development}
+      - EXEC_PATH=${EXEC_PATH}
+      - EXEC_ARGS=${EXEC_ARGS}
+      - FILE_CREATE_PATH=${FILE_CREATE_PATH:-/go/src/telemetry-test-framework/test_file.txt}
+      - FILE_CONTENT=${FILE_CONTENT:-"Test content"}
+      - FILE_UPDATE_PATH=${FILE_UPDATE_PATH:-/go/src/telemetry-test-framework/test_file.txt}
+      - FILE_MODIFY_CONTENT=${FILE_MODIFY_CONTENT:-"Modified content"}
+      - FILE_DELETE_PATH=${FILE_DELETE_PATH:-/go/src/telemetry-test-framework/test_file.txt}
+      - HTTP_ENDPOINT=${HTTP_ENDPOINT}
+      - HTTP_PORT=${HTTP_PORT}
+      - GOCACHE=${GOCACHE:-/go/pkg/mod}
+      - USER=${USER}
+      - USER_ID=${USER_ID}
+      - GROUP_ID=${GROUP_ID}
+      - AWS_ACCOUNT_ID=000000000000
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-test}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-test}
+      - SQS_ENDPOINT=${SQS_ENDPOINT:-http://localstack:4566}
+      - SQS_QUEUE_NAME=test-queue  # Use this if your app needs the queue name separately
+      - SQS_QUEUE_URL=${SQS_QUEUE_URL:-http://localstack:4566/000000000000/test-queue} # Full queue URL
+    volumes:
+      - ./telemetry-app:/go/src/telemetry-test-framework
+      - ${HOST_CACHE_PATH:-./telemetry-app/cache}:/go/pkg/mod
+      - ./scripts:/go/src/telemetry-test-framework/scripts  # Mount the scripts folder
+    ports:
+      - "8080:8080"
+    user: "${USER_ID:-1000}:${GROUP_ID:-1000}"
+    depends_on:
+      - node-server
+      # - localstack
+    networks:
+      - app-network
+    entrypoint: /usr/local/bin/entrypoint.sh
+
+  node-server:
+    build:
+      context: ./http-server
+    container_name: node_server
+    working_dir: /usr/src/app
+    environment:
+      - PORT=3000
+    volumes:
+      - ./http-server:/usr/src/app
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  # localstack:
+  #   build:
+  #     context: ./localstack  # Path to the directory with your Dockerfile
+  #     dockerfile: Dockerfile
+  #   container_name: localstack
+  #   ports:
+  #     - "4566:4566"
+  #   environment:
+  #     - SERVICES=sqs
+  #     - DEBUG=1
+  #     - AWS_ACCESS_KEY_ID=test
+  #     - AWS_SECRET_ACCESS_KEY=test
+  #     - AWS_DEFAULT_REGION=us-east-1
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:4566/health"]
+  #     interval: 30s
+  #     retries: 3
+  #     start_period: 30s
+  #     timeout: 10s
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   networks:
+  #     - app-network
+
+networks:
+  app-network:
+    driver: bridge
