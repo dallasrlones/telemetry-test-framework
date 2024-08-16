@@ -56,6 +56,8 @@ When running inside of docker without building the telemetry data won't be accur
 
 # Whats next?
 
+TESTING!!! I didn't have enough time to write tests yet I added a testing.md file to go over what tests I would write.
+
 I originally wanted to add the telemetry data to SQS so that we can automatically catch it and compare on a rails server hooked up to a queue. Using the timestamps the worker can lookup the correct data and confirm that the telemetry data matches.
 
 I also wanted to add a cron job creator so that every 1 minute it runs and transmits to SQS, the http get request can be the healthcheck. This way we can test in prod and any time something is updated we can automatically detect weirdness if exists.
