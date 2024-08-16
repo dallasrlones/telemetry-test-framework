@@ -53,3 +53,11 @@ You can modify this script's exports to change the file location, process to run
 Once the app is run take a look inside of the /telemetry-logs folder and open the current timestamp that you just ran (folder named by timestamp) this will contain multiple files, JSON and a .log file, the .log file contains an entire history of what happend like STD out and the JSON files contain the telemetry data to compare on.
 
 When running inside of docker without building the telemetry data won't be accurate, docker is only for building and local quick testing. Because the docker env is set to linux alpine, it won't be accurate to what OS you're on. To get accuracy build the app with the script, and then run the build app with the script.
+
+# Whats next?
+
+I originally wanted to add the telemetry data to SQS so that we can automatically catch it and compare on a rails server hooked up to a queue. Using the timestamps the worker can lookup the correct data and confirm that the telemetry data matches.
+
+I also wanted to add a cron job creator so that every 1 minute it runs and transmits to SQS, the http get request can be the healthcheck. This way we can test in prod and any time something is updated we can automatically detect weirdness if exists.
+
+I also wanted to add a compiler for specific OS/ARCH so that a user can set those via params or ENV vars and then build accordingly for that system. This way we can have branches that hold specific builds and all we have to do at that point is place the compiled app inside of that branch.
