@@ -11,7 +11,6 @@
 -   `pkg/fileops/fileops.go`
 -   `pkg/network/network.go`
 -   `pkg/logger/logger.go`
--   `pkg/compare/compare.go`
 
 **Tests to Write:**
 
@@ -50,12 +49,6 @@
         -   Validate that files are created in the correct directory and are named using the appropriate convention.
     -   **Edge Cases:**
         -   Handle cases where the file cannot be written (e.g., due to a full disk or permission issues).
-5.  **Comparison Module (`compare.go`):**
-    
-    -   **Test Telemetry Comparison:**
-        -   Validate that the comparison correctly identifies differences between baseline and post-update telemetry data.
-    -   **Edge Cases:**
-        -   Handle cases where the telemetry data files are incomplete, missing, or corrupted.
 
 #### **2. Integration Testing**
 
